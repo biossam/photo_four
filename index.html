@@ -1,224 +1,126 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Multi-Lang Photobooth (No API Key)</title>
+    <title>English 4-Cut Photobooth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Bebas+Neue&family=Noto+Sans:wght@400;700&family=Caveat:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Bebas+Neue&family=Caveat:wght@400;700&display=swap');
         
-        body {
-            font-family: 'Pretendard', 'Noto Sans', sans-serif;
-            background-color: #f3f4f6;
-        }
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
         
         .print-area {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             background-color: #ffffff;
-            padding: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-radius: 2px;
-            width: 600px; 
-            height: 900px;
+            padding: 20px;
+            width: 560px; 
+            height: 820px;
             margin: 0 auto;
         }
 
-        .photo-strip {
-            flex: 1;
-            height: 100%;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            padding: 5px;
-        }
+        .photo-strip { flex: 1; display: flex; flex-direction: column; }
 
         .photo-frame {
             width: 100%;
-            height: 20%; 
-            background-color: #f3f4f6;
+            height: 165px;
+            background-color: #1e293b;
             margin-bottom: 8px;
             position: relative;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 2px;
         }
 
-        .photo-canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .photo-canvas { width: 100%; height: 100%; object-fit: cover; }
 
         .fixed-label {
             position: absolute;
-            top: 5px;
-            left: 5px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
+            top: 6px; left: 6px;
+            background: #fff; color: #000;
             padding: 1px 6px;
             font-family: 'Bebas Neue', cursive;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            border-radius: 1px;
+            font-size: 0.75rem;
             z-index: 10;
         }
 
         .caption-container {
             position: absolute;
-            bottom: 0;
-            width: 100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.85));
-            padding: 8px 4px 4px 4px;
+            bottom: 0; width: 100%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 10px 5px 5px;
             text-align: center;
             color: white;
-            z-index: 10;
         }
 
-        .caption-main { font-size: 0.85rem; font-weight: bold; margin-bottom: 2px; line-height: 1.1; }
-        .caption-sub { font-size: 0.75rem; opacity: 0.9; line-height: 1.1; }
+        .caption-text { font-size: 0.9rem; font-weight: bold; letter-spacing: -0.02em; }
 
-        .post-card-footer {
-            margin-top: auto;
-            padding: 10px 5px;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .post-card-footer { margin-top: auto; padding: 10px 5px; border-top: 1px solid #f1f5f9; }
 
         .handwriting-row {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            font-family: 'Caveat', cursive;
-            color: #4b5563;
+            display: flex; align-items: baseline; gap: 5px;
+            font-family: 'Caveat', cursive; color: #334155;
         }
 
-        .label-text {
-            font-size: 0.9rem;
-            font-weight: 700;
-            min-width: 35px;
-        }
+        .label-text { font-size: 0.8rem; font-weight: 700; min-width: 30px; color: #94a3b8; font-family: sans-serif; }
+        .input-line { flex: 1; border-bottom: 1px solid #e2e8f0; font-size: 1.1rem; min-height: 1.3rem; }
 
-        .input-line {
-            flex: 1;
-            border-bottom: 1px solid #d1d5db;
-            font-size: 1.1rem;
-            padding-bottom: 2px;
-            min-height: 1.2rem;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .countdown-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 5rem;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+        #countdown {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 6rem; font-weight: 900; color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
             z-index: 50;
         }
 
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #fff;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media print {
-            body * { visibility: hidden; }
-            #capture-area, #capture-area * { visibility: visible; }
-            #capture-area {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: auto;
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
-            }
-        }
+        .flash { animation: flash-anim 0.3s ease-out; }
+        @keyframes flash-anim { 0% { background: white; opacity: 1; } 100% { opacity: 0; } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10 px-4">
+<body class="py-10 px-4">
 
-    <h1 class="text-3xl font-bold mb-2 text-gray-800">📸 Global Photobooth</h1>
-    <p class="text-gray-500 mb-8 text-sm text-center">API Key 없이 바로 즐기는 한국어 & 베트남어 자동 번역 4컷</p>
-
-    <div class="max-w-7xl w-full grid grid-cols-1 xl:grid-cols-12 gap-10">
-        <div class="xl:col-span-5 space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                <div class="space-y-4 mb-6">
-                    <div class="grid grid-cols-1 gap-3">
-                        <div class="flex items-center gap-2">
-                            <span class="w-16 font-bold text-gray-400 text-xs">TO</span>
-                            <input type="text" id="to-input" oninput="updateFooter()" class="flex-1 border p-2 rounded text-sm" placeholder="받는 사람">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-16 font-bold text-gray-400 text-xs">FROM</span>
-                            <input type="text" id="from-input" oninput="updateFooter()" class="flex-1 border p-2 rounded text-sm" placeholder="보내는 사람">
-                        </div>
-                        <hr class="my-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-16 font-bold text-blue-500 text-xs">WHO</span>
-                            <input type="text" id="msg-0" class="flex-1 border p-2 rounded text-sm" value="My best friend">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-16 font-bold text-blue-500 text-xs">WHY</span>
-                            <input type="text" id="msg-1" class="flex-1 border p-2 rounded text-sm" value="Traveling together">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-16 font-bold text-blue-500 text-xs">WHAT</span>
-                            <input type="text" id="msg-2" class="flex-1 border p-2 rounded text-sm" value="Cheese!">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-16 font-bold text-blue-500 text-xs">NOW</span>
-                            <input type="text" id="msg-3" class="flex-1 border p-2 rounded text-sm" value="Happy moment">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="relative rounded-lg overflow-hidden bg-black aspect-video mb-4 border-4 border-gray-800">
-                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100"></video>
-                    <div id="countdown" class="countdown-overlay hidden">3</div>
-                    <div id="translating-overlay" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white hidden">
-                        <div class="loading-spinner mb-4"></div>
-                        <p class="px-6 text-center">실시간 번역 처리 중...</p>
-                    </div>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                    <button id="start-btn" onclick="handleStart()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition">
-                        번역 후 촬영 시작
-                    </button>
-                    <div class="flex gap-2">
-                        <button onclick="downloadStrip()" class="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition">이미지 저장</button>
-                        <button onclick="printStrip()" class="flex-1 bg-gray-800 text-white font-bold py-3 rounded-xl hover:bg-black transition">인쇄하기</button>
-                    </div>
-                </div>
-            </div>
+    <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-black text-slate-800">ENGLISH PHOTOBOOTH</h1>
+            <p class="text-slate-500 text-sm">Type 4 memories and click start!</p>
         </div>
 
-        <div class="xl:col-span-7 flex justify-center items-start overflow-auto bg-gray-300 p-8 rounded-xl">
-            <div id="capture-area" class="print-area">
-                <div id="strip-left" class="photo-strip"></div>
-                <div id="strip-right" class="photo-strip border-l border-dashed border-gray-300 ml-2 pl-4"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <input type="text" id="to-input" oninput="updateFooter()" placeholder="To." class="border p-2 rounded-lg text-sm outline-none focus:border-blue-500">
+                    <input type="text" id="from-input" oninput="updateFooter()" placeholder="From." class="border p-2 rounded-lg text-sm outline-none focus:border-blue-500">
+                </div>
+
+                <div class="space-y-2 mb-6">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Captions</label>
+                    <input type="text" id="msg-0" class="w-full border p-2 rounded-lg text-sm" value="Lovely day with you">
+                    <input type="text" id="msg-1" class="w-full border p-2 rounded-lg text-sm" value="Best moment ever">
+                    <input type="text" id="msg-2" class="w-full border p-2 rounded-lg text-sm" value="Cheese!">
+                    <input type="text" id="msg-3" class="w-full border p-2 rounded-lg text-sm" value="See you again">
+                </div>
+
+                <div class="relative rounded-xl overflow-hidden bg-slate-900 aspect-video mb-6">
+                    <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100"></video>
+                    <div id="flash-overlay" class="absolute inset-0 pointer-events-none"></div>
+                    <div id="countdown" class="hidden"></div>
+                </div>
+
+                <button id="start-btn" onclick="startSequence()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-black transition mb-3">
+                    START SHOOTING
+                </button>
+                <div class="flex gap-2">
+                    <button onclick="downloadStrip()" class="flex-1 border border-slate-200 py-2 rounded-lg text-sm font-medium hover:bg-slate-50">Save Image</button>
+                    <button onclick="window.print()" class="flex-1 border border-slate-200 py-2 rounded-lg text-sm font-medium hover:bg-slate-50">Print</button>
+                </div>
+            </div>
+
+            <div class="flex justify-center bg-slate-200 p-6 rounded-3xl">
+                <div id="capture-area" class="print-area">
+                    <div id="strip-left" class="photo-strip"></div>
+                    <div id="strip-right" class="photo-strip ml-4"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -229,181 +131,93 @@
     <script>
         const video = document.getElementById('webcam');
         const countdownEl = document.getElementById('countdown');
+        const flashEl = document.getElementById('flash-overlay');
         const startBtn = document.getElementById('start-btn');
-        const translatingOverlay = document.getElementById('translating-overlay');
-        const shutterSound = document.getElementById('shutter-sound');
-        const stripLeft = document.getElementById('strip-left');
-        const stripRight = document.getElementById('strip-right');
+        const shutter = document.getElementById('shutter-sound');
 
         function initStrips() {
-            const labels = ['WHO', 'WHY', 'WHAT', 'NOW'];
-            
-            stripLeft.innerHTML = '';
-            labels.forEach((label, i) => {
-                stripLeft.innerHTML += `
-                    <div class="photo-frame">
-                        <div class="fixed-label">${label}</div>
-                        <canvas id="canvas-L-${i}" class="photo-canvas"></canvas>
-                        <div class="caption-container">
-                            <div class="view-en-L-${i} caption-main">...</div>
-                            <div class="view-vi-L-${i} caption-sub text-blue-200">...</div>
-                        </div>
-                    </div>
-                `;
+            const containers = [document.getElementById('strip-left'), document.getElementById('strip-right')];
+            containers.forEach(container => {
+                container.innerHTML = '';
+                for(let i=0; i<4; i++) {
+                    container.innerHTML += `
+                        <div class="photo-frame">
+                            <div class="fixed-label">PIC ${i+1}</div>
+                            <canvas id="canvas-${container.id}-${i}" class="photo-canvas"></canvas>
+                            <div class="caption-container">
+                                <div id="text-${container.id}-${i}" class="caption-text">Ready</div>
+                            </div>
+                        </div>`;
+                }
+                container.innerHTML += `
+                    <div class="post-card-footer">
+                        <div class="handwriting-row"><span class="label-text">To.</span><span class="input-line footer-to"></span></div>
+                        <div class="handwriting-row"><span class="label-text">From.</span><span class="input-line footer-from"></span></div>
+                    </div>`;
             });
-            addFooter(stripLeft, 'L', 'VIETNAMESE VERSION');
-
-            stripRight.innerHTML = '';
-            labels.forEach((label, i) => {
-                stripRight.innerHTML += `
-                    <div class="photo-frame">
-                        <div class="fixed-label">${label}</div>
-                        <canvas id="canvas-R-${i}" class="photo-canvas"></canvas>
-                        <div class="caption-container">
-                            <div class="view-en-R-${i} caption-main">...</div>
-                            <div class="view-ko-R-${i} caption-sub text-emerald-200">...</div>
-                        </div>
-                    </div>
-                `;
-            });
-            addFooter(stripRight, 'R', 'KOREAN VERSION');
-        }
-
-        function addFooter(container, side, verText) {
-            container.innerHTML += `
-                <div class="post-card-footer">
-                    <div class="handwriting-row"><span class="label-text">To.</span><span id="footer-to-${side}" class="input-line"></span></div>
-                    <div class="handwriting-row"><span class="label-text">From.</span><span id="footer-from-${side}" class="input-line"></span></div>
-                    <div class="text-center mt-2"><p class="font-bold text-gray-300 text-[7px] uppercase">${verText}</p></div>
-                </div>
-            `;
         }
 
         function updateFooter() {
-            const toVal = document.getElementById('to-input').value;
-            const fromVal = document.getElementById('from-input').value;
-            ['L', 'R'].forEach(side => {
-                const toEl = document.getElementById(`footer-to-${side}`);
-                const fromEl = document.getElementById(`footer-from-${side}`);
-                if (toEl) toEl.textContent = toVal;
-                if (fromEl) fromEl.textContent = fromVal;
-            });
-        }
-
-        /**
-         * API Key 없이 번역하기 위해 무료 MyMemory API를 사용합니다.
-         */
-        async function translateText(text, targetLang) {
-            try {
-                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
-                const data = await res.json();
-                return data.responseData.translatedText;
-            } catch (e) {
-                console.error("Translation error:", e);
-                return text; // 실패 시 원문 반환
-            }
-        }
-
-        async function handleStart() {
-            const inputs = [
-                document.getElementById('msg-0').value,
-                document.getElementById('msg-1').value,
-                document.getElementById('msg-2').value,
-                document.getElementById('msg-3').value
-            ];
-
-            // 번역 오버레이 표시
-            translatingOverlay.classList.remove('hidden');
-
-            try {
-                // 병렬로 번역 실행 (한국어, 베트남어)
-                const translationPromises = inputs.map(async (text, i) => {
-                    const ko = await translateText(text, 'ko');
-                    const vi = await translateText(text, 'vi');
-                    return { index: i, en: text, ko, vi };
-                });
-
-                const results = await Promise.all(translationPromises);
-
-                results.forEach(res => {
-                    document.querySelectorAll(`.view-en-L-${res.index}, .view-en-R-${res.index}`).forEach(el => el.textContent = res.en);
-                    document.querySelectorAll(`.view-vi-L-${res.index}`).forEach(el => el.textContent = res.vi);
-                    document.querySelectorAll(`.view-ko-R-${res.index}`).forEach(el => el.textContent = res.ko);
-                });
-            } catch (e) {
-                console.error("번역 프로세스 오류", e);
-                inputs.forEach((text, i) => {
-                    document.querySelectorAll(`.view-en-L-${i}, .view-en-R-${i}`).forEach(el => el.textContent = text);
-                });
-            } finally {
-                translatingOverlay.classList.add('hidden');
-            }
-
-            startSequence();
+            const to = document.getElementById('to-input').value;
+            const from = document.getElementById('from-input').value;
+            document.querySelectorAll('.footer-to').forEach(el => el.textContent = to);
+            document.querySelectorAll('.footer-from').forEach(el => el.textContent = from);
         }
 
         async function startSequence() {
             startBtn.disabled = true;
+            
+            // Set texts first
+            for(let i=0; i<4; i++) {
+                const val = document.getElementById(`msg-${i}`).value;
+                document.getElementById(`text-strip-left-${i}`).textContent = val;
+                document.getElementById(`text-strip-right-${i}`).textContent = val;
+            }
+
             for (let i = 0; i < 4; i++) {
-                for (let count = 3; count > 0; count--) {
-                    countdownEl.textContent = count;
-                    countdownEl.classList.remove('hidden');
+                countdownEl.classList.remove('hidden');
+                for (let c = 3; c > 0; c--) {
+                    countdownEl.textContent = c;
                     await new Promise(r => setTimeout(r, 800));
                 }
                 countdownEl.classList.add('hidden');
-                takePhoto(i);
-                if(shutterSound.paused) shutterSound.play().catch(e => {}); 
-                else { shutterSound.currentTime = 0; shutterSound.play().catch(e => {}); }
-                await new Promise(r => setTimeout(r, 600));
+                
+                // Flash & Sound
+                flashEl.classList.add('flash');
+                shutter.currentTime = 0; shutter.play().catch(()=>{});
+                
+                capture(i);
+                
+                setTimeout(() => flashEl.classList.remove('flash'), 300);
+                await new Promise(r => setTimeout(r, 1000));
             }
             startBtn.disabled = false;
         }
 
-        function takePhoto(index) {
-            ['L', 'R'].forEach(side => {
-                const canvas = document.getElementById(`canvas-${side}-${index}`);
+        function capture(index) {
+            ['strip-left', 'strip-right'].forEach(id => {
+                const canvas = document.getElementById(`canvas-${id}-${index}`);
                 const ctx = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(video, 0, 0);
             });
         }
 
         async function downloadStrip() {
-            const captureArea = document.getElementById('capture-area');
-            const canvas = await html2canvas(captureArea, { scale: 2 });
+            const el = document.getElementById('capture-area');
+            const canvas = await html2canvas(el, { scale: 2 });
             const link = document.createElement('a');
-            link.download = `photobooth-${Date.now()}.png`;
+            link.download = `photo-${Date.now()}.png`;
             link.href = canvas.toDataURL();
             link.click();
         }
 
-        async function printStrip() {
-            const captureArea = document.getElementById('capture-area');
-            const canvas = await html2canvas(captureArea, { scale: 2 });
-            const dataUrl = canvas.toDataURL();
-            
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>Print Photobooth</title>
-                        <style>
-                            body { margin: 0; display: flex; justify-content: center; align-items: center; background: white; }
-                            img { max-width: 100%; height: auto; }
-                            @page { size: auto; margin: 0; }
-                        </style>
-                    </head>
-                    <body onload="window.print(); window.close();">
-                        <img src="${dataUrl}" />
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
-        }
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(s => video.srcObject = s)
+            .catch(() => alert("Please allow camera access"));
 
-        navigator.mediaDevices.getUserMedia({ video: true }).then(s => video.srcObject = s).catch(e => console.error("Camera access denied"));
         initStrips();
     </script>
 </body>
