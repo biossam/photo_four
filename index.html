@@ -3,43 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English 4-Cut Photobooth</title>
+    <title>CP1500 Postcard Photobooth with Cutting Line</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Bebas+Neue&family=Caveat:wght@400;700&display=swap');
         
-        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; }
         
+        /* CP1500 Postcard Size: 100mm x 148mm */
         .print-area {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            background-color: #ffffff;
-            padding: 20px;
-            width: 560px; 
-            height: 820px;
+            align-items: stretch;
+            gap: 0;
+            background-color: #fffaf0; 
+            padding: 15px;
+            width: 420px; 
+            height: 620px;
             margin: 0 auto;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            position: relative;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
-        .photo-strip { flex: 1; display: flex; flex-direction: column; }
+        .divider-line {
+            width: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .divider-line::before {
+            content: '';
+            height: 95%;
+            border-left: 1px dashed #cbd5e1;
+            position: absolute;
+            left: 50%;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .photo-strip { flex: 1; display: flex; flex-direction: column; height: 100%; }
 
         .photo-frame {
             width: 100%;
-            height: 165px;
+            height: 115px;
             background-color: #1e293b;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             position: relative;
             overflow: hidden;
-            border-radius: 2px;
+            border-radius: 1px;
+            -webkit-print-color-adjust: exact;
         }
 
         .photo-canvas { width: 100%; height: 100%; object-fit: cover; }
 
         .fixed-label {
             position: absolute;
-            top: 6px; left: 6px;
+            top: 4px; left: 4px;
             background: #fff; color: #000;
-            padding: 1px 6px;
+            padding: 0px 8px;
             font-family: 'Bebas Neue', cursive;
             font-size: 0.75rem;
             z-index: 10;
@@ -48,78 +73,113 @@
         .caption-container {
             position: absolute;
             bottom: 0; width: 100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            padding: 10px 5px 5px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 8px 4px 4px;
             text-align: center;
             color: white;
+            -webkit-print-color-adjust: exact;
         }
 
-        .caption-text { font-size: 0.9rem; font-weight: bold; letter-spacing: -0.02em; }
+        .caption-text { font-size: 0.75rem; font-weight: bold; line-height: 1.1; }
 
-        .post-card-footer { margin-top: auto; padding: 10px 5px; border-top: 1px solid #f1f5f9; }
+        .post-card-footer { margin-top: auto; padding: 8px 4px; border-top: 1px dashed #cbd5e1; }
 
         .handwriting-row {
-            display: flex; align-items: baseline; gap: 5px;
+            display: flex; align-items: baseline; gap: 4px;
             font-family: 'Caveat', cursive; color: #334155;
         }
 
-        .label-text { font-size: 0.8rem; font-weight: 700; min-width: 30px; color: #94a3b8; font-family: sans-serif; }
-        .input-line { flex: 1; border-bottom: 1px solid #e2e8f0; font-size: 1.1rem; min-height: 1.3rem; }
+        .label-text { font-size: 0.7rem; font-weight: 700; min-width: 25px; color: #94a3b8; font-family: sans-serif; }
+        .input-line { flex: 1; border-bottom: 1px solid #e2e8f0; font-size: 1rem; min-height: 1.2rem; }
 
         #countdown {
             position: absolute; inset: 0;
             display: flex; align-items: center; justify-content: center;
-            font-size: 6rem; font-weight: 900; color: white;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            font-size: 5rem; font-weight: 900; color: white;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
             z-index: 50;
         }
 
-        .flash { animation: flash-anim 0.3s ease-out; }
+        .flash { animation: flash-anim 0.2s ease-out; }
         @keyframes flash-anim { 0% { background: white; opacity: 1; } 100% { opacity: 0; } }
+
+        @media print {
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .no-print { display: none !important; }
+            .print-area { 
+                box-shadow: none !important; 
+                width: 100mm !important; 
+                height: 148mm !important; 
+                margin: 0 !important;
+                padding: 5mm !important; 
+                border-radius: 0 !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+            }
+            @page { 
+                size: 100mm 148mm; 
+                margin: 0; 
+            }
+        }
     </style>
 </head>
 <body class="py-10 px-4">
 
-    <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-black text-slate-800">ENGLISH PHOTOBOOTH</h1>
-            <p class="text-slate-500 text-sm">Type 4 memories and click start!</p>
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-6 no-print">
+            <h1 class="text-3xl font-black text-slate-800 tracking-tight">SELPHY CP1500 POSTCARD</h1>
+            <p class="text-slate-500 text-sm">Cut perfectly in half with the guided line</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <input type="text" id="to-input" oninput="updateFooter()" placeholder="To." class="border p-2 rounded-lg text-sm outline-none focus:border-blue-500">
-                    <input type="text" id="from-input" oninput="updateFooter()" placeholder="From." class="border p-2 rounded-lg text-sm outline-none focus:border-blue-500">
+        <div class="flex flex-col lg:flex-row gap-8 items-start justify-center">
+            <!-- UI Panel -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 w-full lg:w-96 no-print">
+                <div class="grid grid-cols-2 gap-3 mb-5">
+                    <input type="text" id="to-input" oninput="updateFooter()" placeholder="To." class="border p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="from-input" oninput="updateFooter()" placeholder="From." class="border p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
-                <div class="space-y-2 mb-6">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Captions</label>
-                    <input type="text" id="msg-0" class="w-full border p-2 rounded-lg text-sm" value="Lovely day with you">
-                    <input type="text" id="msg-1" class="w-full border p-2 rounded-lg text-sm" value="Best moment ever">
-                    <input type="text" id="msg-2" class="w-full border p-2 rounded-lg text-sm" value="Cheese!">
-                    <input type="text" id="msg-3" class="w-full border p-2 rounded-lg text-sm" value="See you again">
+                <div class="space-y-2 mb-5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-10 text-[10px] font-bold text-slate-400">WHO</span>
+                        <input type="text" id="msg-0" class="flex-1 border p-1.5 rounded text-sm" value="With my dear family">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-10 text-[10px] font-bold text-slate-400">WHY</span>
+                        <input type="text" id="msg-1" class="flex-1 border p-1.5 rounded text-sm" value="Weekend picnic time">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-10 text-[10px] font-bold text-slate-400">WHAT</span>
+                        <input type="text" id="msg-2" class="flex-1 border p-1.5 rounded text-sm" value="Making sweet memories">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-10 text-[10px] font-bold text-slate-400">NOW</span>
+                        <input type="text" id="msg-3" class="flex-1 border p-1.5 rounded text-sm" value="Sunday, March 2024">
+                    </div>
                 </div>
 
-                <div class="relative rounded-xl overflow-hidden bg-slate-900 aspect-video mb-6">
+                <div class="relative rounded-lg overflow-hidden bg-slate-900 aspect-[4/3] mb-5">
                     <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100"></video>
                     <div id="flash-overlay" class="absolute inset-0 pointer-events-none"></div>
                     <div id="countdown" class="hidden"></div>
                 </div>
 
-                <button id="start-btn" onclick="startSequence()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-black transition mb-3">
-                    START SHOOTING
+                <button id="start-btn" onclick="startSequence()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 active:scale-95 transition shadow-lg shadow-blue-200 mb-3">
+                    📸 START SHOOTING
                 </button>
-                <div class="flex gap-2">
-                    <button onclick="downloadStrip()" class="flex-1 border border-slate-200 py-2 rounded-lg text-sm font-medium hover:bg-slate-50">Save Image</button>
-                    <button onclick="window.print()" class="flex-1 border border-slate-200 py-2 rounded-lg text-sm font-medium hover:bg-slate-50">Print</button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="save-btn" onclick="handleSave()" class="border border-slate-200 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 active:scale-95 transition">SAVE PNG</button>
+                    <button id="print-btn" onclick="handlePrint()" class="bg-slate-800 text-white py-2 rounded-lg text-xs font-bold hover:bg-black active:scale-95 transition">PRINT (CP1500)</button>
                 </div>
             </div>
 
-            <div class="flex justify-center bg-slate-200 p-6 rounded-3xl">
+            <!-- Postcard Preview -->
+            <div class="flex-1 flex justify-center">
                 <div id="capture-area" class="print-area">
                     <div id="strip-left" class="photo-strip"></div>
-                    <div id="strip-right" class="photo-strip ml-4"></div>
+                    <div class="divider-line"></div>
+                    <div id="strip-right" class="photo-strip"></div>
                 </div>
             </div>
         </div>
@@ -134,6 +194,8 @@
         const flashEl = document.getElementById('flash-overlay');
         const startBtn = document.getElementById('start-btn');
         const shutter = document.getElementById('shutter-sound');
+        
+        const labels = ["WHO", "WHY", "WHAT", "NOW"];
 
         function initStrips() {
             const containers = [document.getElementById('strip-left'), document.getElementById('strip-right')];
@@ -142,10 +204,10 @@
                 for(let i=0; i<4; i++) {
                     container.innerHTML += `
                         <div class="photo-frame">
-                            <div class="fixed-label">PIC ${i+1}</div>
+                            <div class="fixed-label">${labels[i]}</div>
                             <canvas id="canvas-${container.id}-${i}" class="photo-canvas"></canvas>
                             <div class="caption-container">
-                                <div id="text-${container.id}-${i}" class="caption-text">Ready</div>
+                                <div id="text-${container.id}-${i}" class="caption-text">...</div>
                             </div>
                         </div>`;
                 }
@@ -160,14 +222,14 @@
         function updateFooter() {
             const to = document.getElementById('to-input').value;
             const from = document.getElementById('from-input').value;
-            document.querySelectorAll('.footer-to').forEach(el => el.textContent = to);
-            document.querySelectorAll('.footer-from').forEach(el => el.textContent = from);
+            document.querySelectorAll('.footer-to').forEach(el => el.textContent = to || "");
+            document.querySelectorAll('.footer-from').forEach(el => el.textContent = from || "");
         }
 
         async function startSequence() {
+            if(!video.srcObject) return alert("Please allow camera access first.");
             startBtn.disabled = true;
             
-            // Set texts first
             for(let i=0; i<4; i++) {
                 const val = document.getElementById(`msg-${i}`).value;
                 document.getElementById(`text-strip-left-${i}`).textContent = val;
@@ -181,13 +243,9 @@
                     await new Promise(r => setTimeout(r, 800));
                 }
                 countdownEl.classList.add('hidden');
-                
-                // Flash & Sound
                 flashEl.classList.add('flash');
-                shutter.currentTime = 0; shutter.play().catch(()=>{});
-                
+                try { shutter.currentTime = 0; shutter.play(); } catch(e) {}
                 capture(i);
-                
                 setTimeout(() => flashEl.classList.remove('flash'), 300);
                 await new Promise(r => setTimeout(r, 1000));
             }
@@ -200,25 +258,39 @@
                 const ctx = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
-                ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
+                ctx.translate(canvas.width, 0); 
+                ctx.scale(-1, 1);
                 ctx.drawImage(video, 0, 0);
             });
         }
 
-        async function downloadStrip() {
+        function handlePrint() {
+            try {
+                window.print();
+            } catch (e) {
+                alert("Printing is blocked by your browser settings. Please try in a normal window or press Ctrl+P.");
+            }
+        }
+
+        async function handleSave() {
             const el = document.getElementById('capture-area');
-            const canvas = await html2canvas(el, { scale: 2 });
+            const canvas = await html2canvas(el, { 
+                scale: 3, 
+                backgroundColor: '#fffaf0',
+                useCORS: true 
+            });
             const link = document.createElement('a');
-            link.download = `photo-${Date.now()}.png`;
+            link.download = `photobooth-${Date.now()}.png`;
             link.href = canvas.toDataURL();
             link.click();
         }
 
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(s => video.srcObject = s)
-            .catch(() => alert("Please allow camera access"));
-
-        initStrips();
+        window.onload = function() {
+            navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } })
+                .then(s => video.srcObject = s)
+                .catch(() => console.error("Camera access denied."));
+            initStrips();
+        };
     </script>
 </body>
 </html>
