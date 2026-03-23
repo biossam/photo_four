@@ -3,104 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Citizenship Project</title>
+    <title>Global Citizenship Project - Photo Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Bebas+Neue&family=Caveat:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Bebas+Neue&family=Caveat:wght@400;700&family=Noto+Sans+Thai:wght@400;700&display=swap');
         
-        body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
         
-        /* CP1500 Postcard Size: 100mm x 148mm */
+        /* 인화지 느낌의 프레임 (CP1500: 100mm x 148mm) */
         .print-area {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: stretch;
-            gap: 0;
-            background-color: #fffaf0; 
-            padding: 15px;
+            background-color: #ffffff; 
+            padding: 20px 12px; 
             width: 420px; 
             height: 620px;
             margin: 0 auto;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             position: relative;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
+        /* 중앙 절취선 */
         .divider-line {
-            width: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-        
-        .divider-line::before {
-            content: '';
-            height: 95%;
-            border-left: 1px dashed #cbd5e1;
-            position: absolute;
-            left: 50%;
+            width: 1px;
+            border-left: 1px dashed #e2e8f0;
+            margin: 0 10px;
             -webkit-print-color-adjust: exact;
         }
 
-        .photo-strip { flex: 1; display: flex; flex-direction: column; height: 100%; }
+        .photo-strip { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            height: 100%;
+        }
 
         .photo-frame {
             width: 100%;
-            height: 115px;
+            aspect-ratio: 3 / 2.2; 
             background-color: #1e293b;
-            margin-bottom: 6px;
             position: relative;
             overflow: hidden;
-            border-radius: 1px;
             -webkit-print-color-adjust: exact;
         }
 
         .photo-canvas { width: 100%; height: 100%; object-fit: cover; }
 
+        /* WHO, WHY, WHAT, NOW 라벨 디자인 */
         .fixed-label {
             position: absolute;
-            top: 4px; left: 4px;
-            background: #fff; color: #000;
-            padding: 0px 8px;
+            top: 5px; left: 5px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #0f172a;
+            padding: 2px 8px;
             font-family: 'Bebas Neue', cursive;
             font-size: 0.75rem;
+            border-radius: 4px;
             z-index: 10;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .caption-container {
             position: absolute;
             bottom: 0; width: 100%;
-            background: linear-gradient(transparent, rgba(0,0,0,0.7));
-            padding: 8px 4px 4px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            padding: 8px 4px 5px;
             text-align: center;
             color: white;
-            -webkit-print-color-adjust: exact;
         }
 
-        .caption-text { font-size: 0.75rem; font-weight: bold; line-height: 1.1; }
+        .caption-text { font-size: 0.7rem; font-weight: 500; letter-spacing: -0.01em; }
 
-        .post-card-footer { margin-top: auto; padding: 8px 4px; border-top: 1px dashed #cbd5e1; }
+        /* 하단 푸터 디자인 */
+        .post-card-footer { 
+            margin-top: auto; 
+            padding: 12px 2px 0; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 5px;
+        }
 
         .handwriting-row {
-            display: flex; align-items: baseline; gap: 4px;
-            font-family: 'Caveat', cursive; color: #334155;
+            display: flex; 
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .label-text { 
+            font-size: 0.55rem; 
+            font-weight: 800; 
+            color: #94a3b8; 
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
         }
 
-        .label-text { font-size: 0.7rem; font-weight: 700; min-width: 25px; color: #94a3b8; font-family: sans-serif; }
-        .input-line { flex: 1; border-bottom: 1px solid #e2e8f0; font-size: 1rem; min-height: 1.2rem; }
+        .input-line { 
+            font-size: 0.75rem; 
+            color: #1e293b;
+            font-weight: 700;
+            line-height: 1.2;
+            min-height: 1.3rem;
+            border-bottom: 1px solid #f1f5f9; 
+        }
 
+        .thai-text { 
+            font-family: 'Noto Sans Thai', sans-serif; 
+            font-size: 0.6rem; 
+            line-height: 1.4;
+            word-break: keep-all;
+        }
+
+        /* 촬영 인터페이스 */
         #countdown {
             position: absolute; inset: 0;
             display: flex; align-items: center; justify-content: center;
-            font-size: 5rem; font-weight: 900; color: white;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            font-size: 7rem; font-weight: 900; color: white;
+            text-shadow: 0 0 30px rgba(0,0,0,0.6);
             z-index: 50;
         }
 
-        .flash { animation: flash-anim 0.2s ease-out; }
+        .flash { animation: flash-anim 0.25s ease-out; }
         @keyframes flash-anim { 0% { background: white; opacity: 1; } 100% { opacity: 0; } }
 
         @media print {
@@ -111,74 +138,79 @@
                 width: 100mm !important; 
                 height: 148mm !important; 
                 margin: 0 !important;
-                padding: 5mm !important; 
-                border-radius: 0 !important;
+                padding: 4mm !important; 
                 position: absolute !important;
                 top: 0 !important;
                 left: 0 !important;
             }
-            @page { 
-                size: 100mm 148mm; 
-                margin: 0; 
-            }
+            @page { size: 100mm 148mm; margin: 0; }
         }
     </style>
 </head>
 <body class="py-10 px-4">
 
     <div class="max-w-6xl mx-auto">
-        <div class="text-center mb-6 no-print">
-            <h1 class="text-3xl font-black text-slate-800 tracking-tight">SELPHY CP1500 POSTCARD</h1>
-            <p class="text-slate-500 text-sm">Cut perfectly in half with the guided line</p>
+        <!-- 상단 제목 수정 -->
+        <div class="text-center mb-10 no-print">
+            <h1 class="text-5xl font-black text-slate-900 tracking-tight leading-none">GLOBAL CITIZENSHIP PROJECT</h1>
+            <p class="text-slate-500 text-sm mt-3 uppercase tracking-[0.3em] font-bold">Friendship • Culture • Connection</p>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-8 items-start justify-center">
+        <div class="flex flex-col lg:flex-row gap-12 items-start justify-center">
             <!-- UI Panel -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 w-full lg:w-96 no-print">
-                <div class="grid grid-cols-2 gap-3 mb-5">
-                    <input type="text" id="to-input" oninput="updateFooter()" placeholder="To." class="border p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="text" id="from-input" oninput="updateFooter()" placeholder="From." class="border p-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <div class="space-y-2 mb-5">
-                    <div class="flex items-center gap-2">
-                        <span class="w-10 text-[10px] font-bold text-slate-400">WHO</span>
-                        <input type="text" id="msg-0" class="flex-1 border p-1.5 rounded text-sm" value="With my dear family">
+            <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 w-full lg:w-[420px] no-print">
+                <div class="space-y-5 mb-8">
+                    <div class="group">
+                        <label class="block text-[11px] font-black text-slate-400 mb-2 uppercase tracking-wider">To (Recipient Handwriting)</label>
+                        <div class="p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl text-[11px] text-slate-400 leading-relaxed">
+                            The 'To' area on the photo strip is left blank. <br>Please write the recipient's name by hand after printing.
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-10 text-[10px] font-bold text-slate-400">WHY</span>
-                        <input type="text" id="msg-1" class="flex-1 border p-1.5 rounded text-sm" value="Weekend picnic time">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-10 text-[10px] font-bold text-slate-400">WHAT</span>
-                        <input type="text" id="msg-2" class="flex-1 border p-1.5 rounded text-sm" value="Making sweet memories">
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="w-10 text-[10px] font-bold text-slate-400">NOW</span>
-                        <input type="text" id="msg-3" class="flex-1 border p-1.5 rounded text-sm" value="Sunday, March 2024">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-[11px] font-black text-slate-400 mb-2 uppercase tracking-wider">From (Thailand School)</label>
+                            <textarea id="from-left-input" oninput="updateFooter()" rows="2" class="w-full border-2 border-slate-100 p-4 rounded-2xl text-xs outline-none focus:border-blue-500 transition-all bg-slate-50 resize-none">โรงเรียนสาธิตมหาวิทยาลัยศรีนครินทรวิโรฒ ประสานมิตร (ฝ่ายประถม)</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-black text-slate-400 mb-2 uppercase tracking-wider">From (Korea School)</label>
+                            <input type="text" id="from-right-input" oninput="updateFooter()" value="성남장안초등학교" class="w-full border-2 border-slate-100 p-4 rounded-2xl text-xs outline-none focus:border-blue-500 transition-all bg-slate-50">
+                        </div>
                     </div>
                 </div>
 
-                <div class="relative rounded-lg overflow-hidden bg-slate-900 aspect-[4/3] mb-5">
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <div class="col-span-2"><label class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Photo Captions</label></div>
+                    <input type="text" id="msg-0" class="border-2 border-slate-50 p-2.5 rounded-xl text-xs" value="Global Citizens">
+                    <input type="text" id="msg-1" class="border-2 border-slate-50 p-2.5 rounded-xl text-xs" value="Friendship Exchange">
+                    <input type="text" id="msg-2" class="border-2 border-slate-50 p-2.5 rounded-xl text-xs" value="Cultural Connection">
+                    <input type="text" id="msg-3" class="border-2 border-slate-50 p-2.5 rounded-xl text-xs" value="March 2024">
+                </div>
+
+                <div class="relative rounded-[1.5rem] overflow-hidden bg-slate-900 aspect-[4/3] mb-8 shadow-inner group">
                     <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100"></video>
                     <div id="flash-overlay" class="absolute inset-0 pointer-events-none"></div>
                     <div id="countdown" class="hidden"></div>
                 </div>
 
-                <button id="start-btn" onclick="startSequence()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 active:scale-95 transition shadow-lg shadow-blue-200 mb-3">
-                    📸 START SHOOTING
+                <button id="start-btn" onclick="startSequence()" class="w-full bg-slate-900 text-white font-black py-5 rounded-2xl hover:bg-black active:scale-[0.98] transition-all shadow-xl mb-4 tracking-[0.2em] text-sm">
+                    START CAPTURING
                 </button>
-                <div class="grid grid-cols-2 gap-2">
-                    <button id="save-btn" onclick="handleSave()" class="border border-slate-200 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 active:scale-95 transition">SAVE PNG</button>
-                    <button id="print-btn" onclick="handlePrint()" class="bg-slate-800 text-white py-2 rounded-lg text-xs font-bold hover:bg-black active:scale-95 transition">PRINT (CP1500)</button>
+                <div class="grid grid-cols-2 gap-4">
+                    <button id="save-btn" onclick="handleSave()" class="bg-white border-2 border-slate-100 py-3.5 rounded-xl text-xs font-bold hover:bg-slate-50 transition-colors uppercase">Save Image</button>
+                    <button id="print-btn" onclick="handlePrint()" class="bg-blue-50 text-blue-700 py-3.5 rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors uppercase">Print Now</button>
                 </div>
             </div>
 
             <!-- Postcard Preview -->
             <div class="flex-1 flex justify-center">
                 <div id="capture-area" class="print-area">
+                    <!-- Left Strip -->
                     <div id="strip-left" class="photo-strip"></div>
+                    
+                    <!-- Divider -->
                     <div class="divider-line"></div>
+                    
+                    <!-- Right Strip -->
                     <div id="strip-right" class="photo-strip"></div>
                 </div>
             </div>
@@ -198,37 +230,55 @@
         const labels = ["WHO", "WHY", "WHAT", "NOW"];
 
         function initStrips() {
-            const containers = [document.getElementById('strip-left'), document.getElementById('strip-right')];
-            containers.forEach(container => {
+            const containers = [
+                { id: 'strip-left', isThai: true },
+                { id: 'strip-right', isThai: false }
+            ];
+            
+            containers.forEach(config => {
+                const container = document.getElementById(config.id);
                 container.innerHTML = '';
                 for(let i=0; i<4; i++) {
                     container.innerHTML += `
                         <div class="photo-frame">
                             <div class="fixed-label">${labels[i]}</div>
-                            <canvas id="canvas-${container.id}-${i}" class="photo-canvas"></canvas>
+                            <canvas id="canvas-${config.id}-${i}" class="photo-canvas"></canvas>
                             <div class="caption-container">
-                                <div id="text-${container.id}-${i}" class="caption-text">...</div>
+                                <div id="text-${config.id}-${i}" class="caption-text uppercase font-bold"></div>
                             </div>
                         </div>`;
                 }
                 container.innerHTML += `
                     <div class="post-card-footer">
-                        <div class="handwriting-row"><span class="label-text">To.</span><span class="input-line footer-to"></span></div>
-                        <div class="handwriting-row"><span class="label-text">From.</span><span class="input-line footer-from"></span></div>
+                        <div class="handwriting-row">
+                            <span class="label-text">To.</span>
+                            <span class="input-line footer-to"></span>
+                        </div>
+                        <div class="handwriting-row">
+                            <span class="label-text">From.</span>
+                            <span class="input-line footer-from-${config.id} ${config.isThai ? 'thai-text' : ''}"></span>
+                        </div>
                     </div>`;
             });
+            updateFooter();
         }
 
         function updateFooter() {
-            const to = document.getElementById('to-input').value;
-            const from = document.getElementById('from-input').value;
-            document.querySelectorAll('.footer-to').forEach(el => el.textContent = to || "");
-            document.querySelectorAll('.footer-from').forEach(el => el.textContent = from || "");
+            // To 자리는 의도적으로 업데이트하지 않고 비워둠 (손글씨용)
+            const fromLeft = document.getElementById('from-left-input').value;
+            const fromRight = document.getElementById('from-right-input').value;
+            
+            const leftFooter = document.querySelector('.footer-from-strip-left');
+            const rightFooter = document.querySelector('.footer-from-strip-right');
+            
+            if(leftFooter) leftFooter.textContent = fromLeft;
+            if(rightFooter) rightFooter.textContent = fromRight;
         }
 
         async function startSequence() {
-            if(!video.srcObject) return alert("Please allow camera access first.");
+            if(!video.srcObject) return alert("Please enable camera access.");
             startBtn.disabled = true;
+            startBtn.textContent = "READY...";
             
             for(let i=0; i<4; i++) {
                 const val = document.getElementById(`msg-${i}`).value;
@@ -250,37 +300,52 @@
                 await new Promise(r => setTimeout(r, 1000));
             }
             startBtn.disabled = false;
+            startBtn.textContent = "START CAPTURING";
         }
 
         function capture(index) {
             ['strip-left', 'strip-right'].forEach(id => {
                 const canvas = document.getElementById(`canvas-${id}-${index}`);
                 const ctx = canvas.getContext('2d');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
+                
+                const targetRatio = 3 / 2.2;
+                const videoRatio = video.videoWidth / video.videoHeight;
+                
+                let sw, sh, sx, sy;
+                if (videoRatio > targetRatio) {
+                    sh = video.videoHeight;
+                    sw = sh * targetRatio;
+                    sx = (video.videoWidth - sw) / 2;
+                    sy = 0;
+                } else {
+                    sw = video.videoWidth;
+                    sh = sw / targetRatio;
+                    sx = 0;
+                    sy = (video.videoHeight - sh) / 2;
+                }
+
+                canvas.width = 600;
+                canvas.height = 600 / targetRatio;
+                
                 ctx.translate(canvas.width, 0); 
                 ctx.scale(-1, 1);
-                ctx.drawImage(video, 0, 0);
+                ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
             });
         }
 
         function handlePrint() {
-            try {
-                window.print();
-            } catch (e) {
-                alert("Printing is blocked by your browser settings. Please try in a normal window or press Ctrl+P.");
-            }
+            window.print();
         }
 
         async function handleSave() {
             const el = document.getElementById('capture-area');
             const canvas = await html2canvas(el, { 
                 scale: 3, 
-                backgroundColor: '#fffaf0',
+                backgroundColor: '#ffffff',
                 useCORS: true 
             });
             const link = document.createElement('a');
-            link.download = `photobooth-${Date.now()}.png`;
+            link.download = `global-citizenship-${Date.now()}.png`;
             link.href = canvas.toDataURL();
             link.click();
         }
@@ -288,7 +353,7 @@
         window.onload = function() {
             navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } })
                 .then(s => video.srcObject = s)
-                .catch(() => console.error("Camera access denied."));
+                .catch(() => console.error("Camera error."));
             initStrips();
         };
     </script>
