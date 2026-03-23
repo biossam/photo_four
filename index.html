@@ -2,13 +2,14 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>AI Multi-Lang Photobooth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Multi-Lang Photobooth (No API Key)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Bebas+Neue&family=Noto+Sans+Thai:wght@400;700&family=Caveat:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&family=Bebas+Neue&family=Noto+Sans:wght@400;700&family=Caveat:wght@400;700&display=swap');
         
         body {
-            font-family: 'Pretendard', 'Noto Sans Thai', sans-serif;
+            font-family: 'Pretendard', 'Noto Sans', sans-serif;
             background-color: #f3f4f6;
         }
         
@@ -139,16 +140,26 @@
             100% { transform: rotate(360deg); }
         }
 
-        .filter-none { filter: none; }
-        .filter-grayscale { filter: grayscale(100%); }
-        .filter-sepia { filter: sepia(1); }
-        .filter-vivid { filter: saturate(1.5) contrast(1.1); }
+        @media print {
+            body * { visibility: hidden; }
+            #capture-area, #capture-area * { visibility: visible; }
+            #capture-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
 
-    <h1 class="text-3xl font-bold mb-2 text-gray-800">📸 Apps Script AI Photobooth</h1>
-    <p class="text-gray-500 mb-8 text-sm text-center">주소 기반 자동 번역 시스템<br>(좌: 태국어 | 우: 한국어)</p>
+    <h1 class="text-3xl font-bold mb-2 text-gray-800">📸 Global Photobooth</h1>
+    <p class="text-gray-500 mb-8 text-sm text-center">API Key 없이 바로 즐기는 한국어 & 베트남어 자동 번역 4컷</p>
 
     <div class="max-w-7xl w-full grid grid-cols-1 xl:grid-cols-12 gap-10">
         <div class="xl:col-span-5 space-y-6">
@@ -157,29 +168,28 @@
                     <div class="grid grid-cols-1 gap-3">
                         <div class="flex items-center gap-2">
                             <span class="w-16 font-bold text-gray-400 text-xs">TO</span>
-                            <input type="text" id="to-input" oninput="updateFooter()" class="flex-1 border p-2 rounded text-sm outline-none focus:ring-2 focus:ring-blue-400" placeholder="받는 사람">
+                            <input type="text" id="to-input" oninput="updateFooter()" class="flex-1 border p-2 rounded text-sm" placeholder="받는 사람">
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-16 font-bold text-gray-400 text-xs">FROM</span>
-                            <input type="text" id="from-input" oninput="updateFooter()" class="flex-1 border p-2 rounded text-sm outline-none focus:ring-2 focus:ring-blue-400" placeholder="보내는 사람">
+                            <input type="text" id="from-input" oninput="updateFooter()" class="flex-1 border p-2 rounded text-sm" placeholder="보내는 사람">
                         </div>
                         <hr class="my-2">
-                        <p class="text-[10px] text-blue-500 font-bold uppercase tracking-wider">Address/Context Info</p>
                         <div class="flex items-center gap-2">
                             <span class="w-16 font-bold text-blue-500 text-xs">WHO</span>
-                            <input type="text" id="msg-0" class="flex-1 border p-2 rounded text-sm" value="Our family">
+                            <input type="text" id="msg-0" class="flex-1 border p-2 rounded text-sm" value="My best friend">
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-16 font-bold text-blue-500 text-xs">WHY</span>
-                            <input type="text" id="msg-1" class="flex-1 border p-2 rounded text-sm" value="Vacation in Seoul">
+                            <input type="text" id="msg-1" class="flex-1 border p-2 rounded text-sm" value="Traveling together">
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-16 font-bold text-blue-500 text-xs">WHAT</span>
-                            <input type="text" id="msg-2" class="flex-1 border p-2 rounded text-sm" value="Making memories">
+                            <input type="text" id="msg-2" class="flex-1 border p-2 rounded text-sm" value="Cheese!">
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="w-16 font-bold text-blue-500 text-xs">NOW</span>
-                            <input type="text" id="msg-3" class="flex-1 border p-2 rounded text-sm" value="Gangnam, Korea">
+                            <input type="text" id="msg-3" class="flex-1 border p-2 rounded text-sm" value="Happy moment">
                         </div>
                     </div>
                 </div>
@@ -189,17 +199,17 @@
                     <div id="countdown" class="countdown-overlay hidden">3</div>
                     <div id="translating-overlay" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white hidden">
                         <div class="loading-spinner mb-4"></div>
-                        <p id="translate-status" class="px-6 text-center">AI 자동 번역 중...</p>
+                        <p class="px-6 text-center">실시간 번역 처리 중...</p>
                     </div>
                 </div>
 
                 <div class="flex flex-col gap-2">
                     <button id="start-btn" onclick="handleStart()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition">
-                        AI 번역 및 촬영 시작
+                        번역 후 촬영 시작
                     </button>
                     <div class="flex gap-2">
-                        <button onclick="downloadStrip()" class="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl">저장</button>
-                        <button onclick="printStrip()" class="flex-1 bg-gray-800 text-white font-bold py-3 rounded-xl">인쇄</button>
+                        <button onclick="downloadStrip()" class="flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition">이미지 저장</button>
+                        <button onclick="printStrip()" class="flex-1 bg-gray-800 text-white font-bold py-3 rounded-xl hover:bg-black transition">인쇄하기</button>
                     </div>
                 </div>
             </div>
@@ -217,8 +227,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        // 앱스 스크립트 실행 환경에서 자동으로 부여되는 API 키 사용
-        const apiKey = ""; 
         const video = document.getElementById('webcam');
         const countdownEl = document.getElementById('countdown');
         const startBtn = document.getElementById('start-btn');
@@ -229,6 +237,7 @@
 
         function initStrips() {
             const labels = ['WHO', 'WHY', 'WHAT', 'NOW'];
+            
             stripLeft.innerHTML = '';
             labels.forEach((label, i) => {
                 stripLeft.innerHTML += `
@@ -237,12 +246,12 @@
                         <canvas id="canvas-L-${i}" class="photo-canvas"></canvas>
                         <div class="caption-container">
                             <div class="view-en-L-${i} caption-main">...</div>
-                            <div class="view-th-L-${i} caption-sub text-blue-200">...</div>
+                            <div class="view-vi-L-${i} caption-sub text-blue-200">...</div>
                         </div>
                     </div>
                 `;
             });
-            addFooter(stripLeft, 'L', 'THAI VERSION');
+            addFooter(stripLeft, 'L', 'VIETNAMESE VERSION');
 
             stripRight.innerHTML = '';
             labels.forEach((label, i) => {
@@ -274,57 +283,62 @@
             const toVal = document.getElementById('to-input').value;
             const fromVal = document.getElementById('from-input').value;
             ['L', 'R'].forEach(side => {
-                document.getElementById(`footer-to-${side}`).textContent = toVal;
-                document.getElementById(`footer-from-${side}`).textContent = fromVal;
+                const toEl = document.getElementById(`footer-to-${side}`);
+                const fromEl = document.getElementById(`footer-from-${side}`);
+                if (toEl) toEl.textContent = toVal;
+                if (fromEl) fromEl.textContent = fromVal;
             });
         }
 
-        async function callGemini(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { 
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "ARRAY",
-                            items: {
-                                type: "OBJECT",
-                                properties: {
-                                    en: { type: "STRING" },
-                                    ko: { type: "STRING" },
-                                    th: { type: "STRING" }
-                                }
-                            }
-                        }
-                    }
-                })
-            });
-            const data = await response.json();
-            return JSON.parse(data.candidates[0].content.parts[0].text);
+        /**
+         * API Key 없이 번역하기 위해 무료 MyMemory API를 사용합니다.
+         */
+        async function translateText(text, targetLang) {
+            try {
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`);
+                const data = await res.json();
+                return data.responseData.translatedText;
+            } catch (e) {
+                console.error("Translation error:", e);
+                return text; // 실패 시 원문 반환
+            }
         }
 
         async function handleStart() {
-            if (startBtn.disabled) return;
             const inputs = [
                 document.getElementById('msg-0').value,
                 document.getElementById('msg-1').value,
                 document.getElementById('msg-2').value,
                 document.getElementById('msg-3').value
             ];
+
+            // 번역 오버레이 표시
             translatingOverlay.classList.remove('hidden');
+
             try {
-                const prompt = `Convert these 4 photo captions into natural sounding short phrases. Provide English, Korean, and Thai. Context: ${JSON.stringify(inputs)}`;
-                const translations = await callGemini(prompt);
-                inputs.forEach((text, i) => {
-                    const item = translations[i];
-                    document.querySelectorAll(`.view-en-L-${i}, .view-en-R-${i}`).forEach(el => el.textContent = item.en);
-                    document.querySelectorAll(`.view-th-L-${i}`).forEach(el => el.textContent = item.th);
-                    document.querySelectorAll(`.view-ko-R-${i}`).forEach(el => el.textContent = item.ko);
+                // 병렬로 번역 실행 (한국어, 베트남어)
+                const translationPromises = inputs.map(async (text, i) => {
+                    const ko = await translateText(text, 'ko');
+                    const vi = await translateText(text, 'vi');
+                    return { index: i, en: text, ko, vi };
                 });
-            } catch (e) { console.error(e); } finally { translatingOverlay.classList.add('hidden'); }
+
+                const results = await Promise.all(translationPromises);
+
+                results.forEach(res => {
+                    document.querySelectorAll(`.view-en-L-${res.index}, .view-en-R-${res.index}`).forEach(el => el.textContent = res.en);
+                    document.querySelectorAll(`.view-vi-L-${res.index}`).forEach(el => el.textContent = res.vi);
+                    document.querySelectorAll(`.view-ko-R-${res.index}`).forEach(el => el.textContent = res.ko);
+                });
+            } catch (e) {
+                console.error("번역 프로세스 오류", e);
+                inputs.forEach((text, i) => {
+                    document.querySelectorAll(`.view-en-L-${i}, .view-en-R-${i}`).forEach(el => el.textContent = text);
+                });
+            } finally {
+                translatingOverlay.classList.add('hidden');
+            }
+
             startSequence();
         }
 
@@ -338,7 +352,8 @@
                 }
                 countdownEl.classList.add('hidden');
                 takePhoto(i);
-                shutterSound.play();
+                if(shutterSound.paused) shutterSound.play().catch(e => {}); 
+                else { shutterSound.currentTime = 0; shutterSound.play().catch(e => {}); }
                 await new Promise(r => setTimeout(r, 600));
             }
             startBtn.disabled = false;
@@ -356,7 +371,8 @@
         }
 
         async function downloadStrip() {
-            const canvas = await html2canvas(document.getElementById('capture-area'), { scale: 2 });
+            const captureArea = document.getElementById('capture-area');
+            const canvas = await html2canvas(captureArea, { scale: 2 });
             const link = document.createElement('a');
             link.download = `photobooth-${Date.now()}.png`;
             link.href = canvas.toDataURL();
@@ -364,14 +380,30 @@
         }
 
         async function printStrip() {
-            const canvas = await html2canvas(document.getElementById('capture-area'), { scale: 2 });
+            const captureArea = document.getElementById('capture-area');
+            const canvas = await html2canvas(captureArea, { scale: 2 });
+            const dataUrl = canvas.toDataURL();
+            
             const printWindow = window.open('', '_blank');
-            printWindow.document.write(`<img src="${canvas.toDataURL()}" style="width:100%">`);
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print Photobooth</title>
+                        <style>
+                            body { margin: 0; display: flex; justify-content: center; align-items: center; background: white; }
+                            img { max-width: 100%; height: auto; }
+                            @page { size: auto; margin: 0; }
+                        </style>
+                    </head>
+                    <body onload="window.print(); window.close();">
+                        <img src="${dataUrl}" />
+                    </body>
+                </html>
+            `);
             printWindow.document.close();
-            printWindow.print();
         }
 
-        navigator.mediaDevices.getUserMedia({ video: true }).then(s => video.srcObject = s);
+        navigator.mediaDevices.getUserMedia({ video: true }).then(s => video.srcObject = s).catch(e => console.error("Camera access denied"));
         initStrips();
     </script>
 </body>
